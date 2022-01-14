@@ -1,9 +1,10 @@
-import { operations } from "../../.temp/types";
-import { JsonRequestWithValidation } from "../request";
+import {JsonRequest} from "http-req-builder";
+import {operations} from "../../.temp/types";
 
 export class StoreController {
     async getInventory() {
-        return (await new JsonRequestWithValidation()
+        return (
+            await new JsonRequest()
                 .url(`http://localhost/v2/store/inventory`)
                 .send<operations['getInventory']['responses']['200']['schema']>()
         ).body
