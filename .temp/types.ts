@@ -65,26 +65,19 @@ export interface paths {
 
 export interface definitions {
   Category: {
-    /** Format: int64 */
     id: number;
     name: string;
   };
   Pet: {
-    /** Format: int64 */
     id: number;
     category: definitions["Category"];
-    /** @example doggie */
     name: string;
     photoUrls: string[];
     tags: definitions["Tag"][];
-    /**
-     * @description pet status in the store
-     * @enum {string}
-     */
+    /** pet status in the store */
     status: "available" | "pending" | "sold";
   };
   Tag: {
-    /** Format: int64 */
     id: number;
     name: string;
   };
@@ -93,31 +86,20 @@ export interface definitions {
     message?: string;
   };
   Order: {
-    /** Format: int64 */
     id: number;
-    /** Format: int64 */
     petId: number;
-    /** Format: int32 */
     quantity: number;
-    /** Format: date-time */
     shipDate: string;
-    /**
-     * @description Order Status
-     * @enum {string}
-     */
+    /** Order Status */
     status: "placed" | "approved" | "delivered";
     complete?: boolean;
   };
   Inventory: {
-    /** Format: int64 */
     available: number;
-    /** Format: int64 */
     pending: number;
-    /** Format: int64 */
     sold: number;
   };
   User: {
-    /** Format: int64 */
     id: number;
     username: string;
     firstName: string;
@@ -125,10 +107,7 @@ export interface definitions {
     email: string;
     password: string;
     phone: string;
-    /**
-     * Format: int32
-     * @description User Status
-     */
+    /** User Status */
     userStatus: number;
   };
 }
@@ -189,7 +168,7 @@ export interface operations {
       };
       formData: {
         /** file to upload */
-        file?: unknown;
+        file?: { [key: string]: any };
       };
     };
     responses: {
@@ -492,5 +471,3 @@ export interface operations {
     };
   };
 }
-
-export interface external {}

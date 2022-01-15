@@ -1,110 +1,74 @@
-import { URLSearchParams } from 'url'
-import { JsonRequest } from 'http-req-builder'
+import { URLSearchParams } from 'url';
 import { definitions, operations } from '../../.temp/types'
-import { validate } from '../validator'
+import { JsonRequestWithValidation } from '../request';
+import { BaseController } from './base.controller';
 
-export class PetController {
+export class PetController extends BaseController {
     async getById(id: number | string) {
-        const body = (
-            await new JsonRequest()
+        return (
+            await new JsonRequestWithValidation()
                 .url(`http://localhost/v2/pet/${id}`)
+                .headers({ token: this.params.token })
+                .cookieJar(this.params.cookies)
                 .send<operations['getPetById']['responses']['200']['schema']>()
-        ).body
-        const schema = {
-            "$schema": "http://json-schema.org/draft-07/schema",
-            "type": "object",
-            "properties": {
-                "id": {
-                    "type": "integer"
-                },
-                "category": {
-                    "type": "object",
-                    "properties": {
-                        "id": {
-                            "type": "integer"
-                        },
-                        "name": {
-                            "type": "string"
-                        }
-                    }
-                },
-                "name": {
-                    "type": "string"
-                },
-                "photoUrls": {
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
-                },
-                "tags": {
-                    "type": "array",
-                    "items": {
-                        "type": "object",
-                        "properties": {
-                            "id": {
-                                "type": "integer"
-                            },
-                            "name": {
-                                "type": "string"
-                            }
-                        }
-                    }
-                },
-                "status": {
-                    "type": "string"
-                }
-            }
-        }
-
-        validate(schema, body)
-        return body
+        ).body;
     }
 
     async findByTags(tags: string | string[]) {
         return (
-            await new JsonRequest()
-                .url('http://localhost/v2/pet/findByTags')
+            await new JsonRequestWithValidation()
+                .url(`http://localhost/v2/pet/findByTags`)
+                .headers({ token: this.params.token })
+                .cookieJar(this.params.cookies)
                 .searchParams(new URLSearchParams({ tags }))
                 .send<operations['findPetsByTags']['responses']['200']['schema']>()
-        ).body
+        ).body;
     }
 
     async findByStatus(status: string | string[]) {
         return (
-            await new JsonRequest()
-                .url('http://localhost/v2/pet/findByStatus')
+            await new JsonRequestWithValidation()
+                .url(`http://localhost/v2/pet/findByStatus`)
+                .headers({ token: this.params.token })
+                .cookieJar(this.params.cookies)
                 .searchParams(new URLSearchParams({ status }))
                 .send<operations['findPetsByStatus']['responses']['200']['schema']>()
-        ).body
+        ).body;
     }
 
-    async addNew(pet: Omit<definitions['Pet'], 'id'>) {
+
+    async addNew(pet: Omit<definitions['Pet'], "id">) {
         return (
-            await new JsonRequest()
+            await new JsonRequestWithValidation()
                 .url(`http://localhost/v2/pet`)
+                .headers({ token: this.params.token })
+                .cookieJar(this.params.cookies)
                 .method('POST')
                 .body(pet)
-                .send<operations['addPet']['responses']['200']['schema']>()
-        ).body
+                .send<Required<operations['addPet']['responses']['200']['schema']>>()
+        ).body;
     }
 
     async update(pet: definitions['Pet']) {
         return (
-            await new JsonRequest()
+            await new JsonRequestWithValidation()
                 .url(`http://localhost/v2/pet`)
+                .headers({ token: this.params.token })
+                .cookieJar(this.params.cookies)
                 .method('PUT')
                 .body(pet)
                 .send<operations['updatePet']['responses']['200']['schema']>()
-        ).body
+        ).body;
     }
 
     async delete(id: number | string) {
         return (
-            await new JsonRequest()
+            await new JsonRequestWithValidation()
                 .url(`http://localhost/v2/pet/${id}`)
+                .headers({ token: this.params.token })
+                .cookieJar(this.params.cookies)
                 .method('DELETE')
-                .send<definitions['AbstractApiResponse']>()
-        ).body
+                .send<{ message: string }>()
+        ).body;
     }
 }
